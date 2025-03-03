@@ -1,0 +1,11 @@
+{
+  "SECRET_KEY": "ashkjfh21hekh12h4jk21h3jk21h3jh213wqsdacyizxo",
+  "JWT_SECRET_KEY": "kewyiuvalkb7983284rfjkvnmnzviuoyewqrewkjsdafhvcx3298461",
+  "SQLALCHEMY_TRACK_MODIFICATIONS": false,
+  "DEBUG": true,
+  "JWT_EXP_MILLISECONDS": 300000,
+  "MAX_CONTENT_LENGTH": 16000000,
+  "SQLALCHEMY_DATABASE_URI": "sqlite:///C://Users//william.fisher//Desktop//app_files//app_db.db",
+  "UPLOAD_FOLDER": "C://Users//william.fisher//Desktop//app_files//images",
+  "LOGS_DIRECTORY": "C://Users//william.fisher//Desktop//app_files"
+}
