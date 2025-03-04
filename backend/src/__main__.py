@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO, emit
 import random
 
-from src.extensions.extensions import bcrypt, db, jwt
+from src.extensions.extensions import bcrypt, db, jwt, cors
 import json
 
 from src.routes.app_routes import user_blueprint
@@ -13,6 +13,7 @@ app.config.from_file("configs//configs.json", load=json.load)
 db.init_app(app)
 bcrypt.init_app(app)
 jwt.init_app(app)
+cors.init_app(app)
 
 app.register_blueprint(user_blueprint)
 

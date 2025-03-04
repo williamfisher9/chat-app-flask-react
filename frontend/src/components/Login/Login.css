@@ -1,0 +1,3 @@
+.text-field {
+    @apply absolute w-full h-full top-0 left-0 bg-transparent pl-[55px] border-none outline-none text-white
+}

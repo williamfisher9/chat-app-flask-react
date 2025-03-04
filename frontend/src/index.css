@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --global-color: #cbb261;
+    --global-color-hover: #e9ca66;
+}
+
+html {
+    @apply p-0 m-0 box-border
+}
+
+body {
+    @apply bg-gray-800
+}
+
+@layer components {
+    .general-font-color {
+        color: #b19d5b
+    }
+}
