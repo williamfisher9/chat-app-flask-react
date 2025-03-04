@@ -5,12 +5,17 @@ from src.messages.response_message import ResponseMessage
 from src.model.user import User
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
+import uuid
+
 user_blueprint = Blueprint("user_blueprint", url_prefix="/api/v1/users", import_name=__name__)
 
 @user_blueprint.route("/signup", methods=['POST'])
 def register_user():
     data = request.get_json()
     user = User(data["email_address"], bcrypt.generate_password_hash(data["password"]), data["first_name"], data["last_name"])
+
+    user.user_id = f"user_{str(uuid.uuid4()).replace('-', '')}"
+
     db.session.add(user)
     db.session.commit()
 
@@ -31,7 +36,9 @@ def login_user():
         response_message = ResponseMessage("Invalid username/password", 400)
         return response_message.create_response_message(), 400
 
-    response_message = ResponseMessage(create_access_token(user.email_address), 200)
+    response_message = ResponseMessage({"token": create_access_token(user.email_address),
+                                        "email_address": user.email_address,
+                                        "user_id": user.user_id}, 200)
     return response_message.create_response_message(), 200
 
 @user_blueprint.route("home", methods=['GET'])

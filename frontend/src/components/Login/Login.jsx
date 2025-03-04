@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css'
 import { useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Login = () => {
     }
     
     const handleLoginRequest = () => {
+        event.preventDefault();
         let hasErrors = false;
         let newErrors = {};
 
@@ -34,6 +36,9 @@ const Login = () => {
             axios.post("http://localhost:5000/api/v1/users/signin", {"email_address": formFields.emailAddress, "password": formFields.password})
             .then((res) => {
                 if(res.status == 200){
+                    Cookies.set("token", res.data.contents.token);
+                    Cookies.set("email_address", res.data.contents.email_address);
+                    Cookies.set("user_id", res.data.contents.user_id);
                     setLoginRequestError("")
                     navigate("/home")
                 }
@@ -46,7 +51,7 @@ const Login = () => {
     }
 
     return <div className='w-full min-h-screen flex justify-center items-center'>
-        <div className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
+        <form className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
         <div className='w-full flex'>
                 <Link to="/login" className={`w-[50%] h-[60px] bg-[var(--global-color)]  border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign In</Link>
                 <Link to="/register" className={`w-[50%] h-[60px] text-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign Up</Link>
@@ -56,13 +61,13 @@ const Login = () => {
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='text' placeholder='Email Address' className='text-field' name='emailAddress' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">person</span>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">person</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.emailAddress}</p>
             </div>
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
-                <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
+                <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange} autoComplete='off'/>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.password}</p>
             </div>
 
@@ -81,7 +86,7 @@ const Login = () => {
             }
 
             <span className='text-white'>Don't have an account? <a href='/register' className='underline text-[var(--global-color)]'>Sign Up</a></span>
-        </div>
+        </form>
     </div>
 }
 

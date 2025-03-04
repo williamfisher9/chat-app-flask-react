@@ -14,6 +14,7 @@ const Register = () => {
     }
     
     const handleSignUpRequest = () => {
+        event.preventDefault();
         let hasErrors = false;
         let newErrors = {};
 
@@ -59,7 +60,7 @@ const Register = () => {
     }
 
     return <div className='w-full min-h-screen flex justify-center items-center'>
-        <div className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center overflow-hidden'>
+        <form className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center overflow-hidden'>
             <div className='w-full flex'>
                 <Link to="/login" className={`w-[50%] h-[60px] text-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign In</Link>
                 <Link to="/register" className={`w-[50%] h-[60px] bg-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign Up</Link>
@@ -69,25 +70,25 @@ const Register = () => {
             
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='text' placeholder='Email Address' className='text-field' name='emailAddress' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">mail</span>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">mail</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.emailAddress}</p>
             </div>
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='text' placeholder='First Name' className='text-field' name='firstName' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">badge</span>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">badge</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.firstName}</p>
             </div>
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='text' placeholder='Last Name' className='text-field' name='lastName' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">badge</span>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">badge</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.lastName}</p>
             </div>
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
-                <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange}/>
-                <span class="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
+                <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange} autoComplete='off'/>
+                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.password}</p>
             </div>
 
@@ -100,7 +101,7 @@ const Register = () => {
             }
 
             <span className='text-white'>You have an account? <a href='/login' className='underline text-[var(--global-color)]'>Sign In</a></span>
-        </div>
+        </form>
     </div>
 }
 
