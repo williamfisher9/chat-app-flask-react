@@ -1,6 +1,7 @@
 from flask import Blueprint, request
+from flask_socketio import emit
 
-from src.extensions.extensions import db, bcrypt
+from src.extensions.extensions import db, bcrypt, socketio
 from src.messages.response_message import ResponseMessage
 from src.model.user import User
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -46,3 +47,39 @@ def login_user():
 def get_user_home():
     user_identity = get_jwt_identity()
     return user_identity, 200
+
+@user_blueprint.route("validate-jwt-token", methods=['GET'])
+@jwt_required()
+def validate_jwt_token():
+    response_message = ResponseMessage("Invalid username/password", 200)
+    return response_message.create_response_message(), 200
+
+
+
+
+
+"""
+@user_blueprint.route("/send", methods=['POST'])
+@jwt_required()
+def send_message_to_others():
+    msg = request.get_json()
+    print(msg)
+
+    print(request.headers)
+    print(msg)
+    print()
+    socketio.emit("new_message",
+         {"username": "ttttttttttttt",
+          "avatar": "aaaaaaaaaaaaa",
+          "message": "123",
+          "sid": "msg"},
+         )
+
+
+
+    response_message = ResponseMessage("Created successfully", 201)
+    return response_message.create_response_message(), 201
+
+
+
+"""
