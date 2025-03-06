@@ -115,7 +115,12 @@ const Home = () => {
 
   return (
     <div className="w-full">
-      <Menu handleDisconnect={handleDisconnect} />
+      {
+        socket != null ?
+        <Menu handleDisconnect={handleDisconnect} socketId={socket.id}/>
+        :
+        <Menu handleDisconnect={handleDisconnect}/>
+      }
 
       {/*<div className="mt-24 flex gap-4 justify-center items-center">
           <button className='btn' onClick={handleConnect}>RECONNECT</button>
@@ -127,8 +132,7 @@ const Home = () => {
             return (
               <div
                 key={connectedUsers[key].id}
-                className="cursor-pointer hover:bg-yellow-500/5 border-2 border-[var(--global-color)] rounded-md w-[90%] 
-                                                                h-[70px] px-2 flex justify-start items-center gap-2"
+                className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] h-[70px] px-2 flex justify-start items-center gap-2"
               >
                 <img
                   src={connectedUsers[key].avatar}

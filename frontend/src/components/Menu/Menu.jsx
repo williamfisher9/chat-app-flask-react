@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './Menu.css'
 import Cookies from 'js-cookie'
 
-const Menu = ({handleDisconnect}) => {
+const Menu = ({handleDisconnect, socketId}) => {
     const navigate = useNavigate(null);
     const signUserOut = () => {
         Cookies.remove("token")
@@ -16,6 +16,10 @@ const Menu = ({handleDisconnect}) => {
         <Link to={"/"}>
             <img src='logo_chat.png' alt='logo' className='h-8 cursor-pointer' />
         </Link>
+
+        <div className='text-[var(--global-color)]'>
+            {socketId}
+        </div>
 
         <div className='flex gap-3' onClick={signUserOut}>
                 <button className='btn'>Sign Out</button>
