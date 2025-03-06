@@ -3,6 +3,7 @@ from flask_socketio import emit
 
 from src.extensions.extensions import db, bcrypt, socketio
 from src.messages.response_message import ResponseMessage
+from src.model.chat_history_item import ChatHistoryItem
 from src.model.user import User
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -16,6 +17,7 @@ def register_user():
     user = User(data["email_address"], bcrypt.generate_password_hash(data["password"]), data["first_name"], data["last_name"])
 
     user.user_id = f"user_{str(uuid.uuid4()).replace('-', '')}"
+    user.avatar = f"https://avatar.iran.liara.run/username?username={data["first_name"]}+{data["last_name"]}"
 
     db.session.add(user)
     db.session.commit()
@@ -51,7 +53,8 @@ def get_user_home():
 @user_blueprint.route("validate-jwt-token", methods=['GET'])
 @jwt_required()
 def validate_jwt_token():
-    response_message = ResponseMessage("Invalid username/password", 200)
+    chat_history = ChatHistoryItem.query.all()
+    response_message = ResponseMessage([chat_item.to_dict() for chat_item in chat_history], 200)
     return response_message.create_response_message(), 200
 
 

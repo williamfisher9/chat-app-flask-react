@@ -5,7 +5,7 @@
   "DEBUG": true,
   "JWT_EXP_MILLISECONDS": 300000,
   "MAX_CONTENT_LENGTH": 16000000,
-  "SQLALCHEMY_DATABASE_URI": "sqlite:///C://Users//william.fisher//Desktop//app_files//app_db.db",
+  "SQLALCHEMY_DATABASE_URI": "sqlite:///C://Users//william.fisher//Desktop//app_files//app_db2.db",
   "UPLOAD_FOLDER": "C://Users//william.fisher//Desktop//app_files//images",
   "LOGS_DIRECTORY": "C://Users//william.fisher//Desktop//app_files"
 }

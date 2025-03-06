@@ -1,11 +1,12 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from src.extensions.extensions import socketio
+from src.extensions.extensions import socketio, db
 import random
 from flask import request
 from flask_socketio import emit
 from flask_jwt_extended import verify_jwt_in_request
 
+from src.model.chat_history_item import ChatHistoryItem
 from src.model.user import User
 
 # store connected users
@@ -20,26 +21,20 @@ def initialize_sockets():
 
     @socketio.on("authenticate")
     def handle_authenticate_user(msg):
-        print(msg)
         emit("set_username", {"username": "test123"}, broadcast=True)
 
 
     # handling connect event
     @socketio.on("connect")
     def handle_connect():
-        #print(request.headers["authorization"])
-        #print(request.headers["user"])
-
         user = User.query.filter_by(user_id=request.headers["username"]).first()
-
-        print(user)
 
         username = request.headers["username"]
         full_name = f"{user.last_name}, {user.first_name}"
-        gender = random.choice(["girl", "boy"])
-        avatar_url = f"https://avatar.iran.liara.run/public/{gender}?username={username}"
+        #gender = random.choice(["girl", "boy"])
+        avatar_url = f"https://avatar.iran.liara.run/username?username={user.first_name}+{user.last_name}"
         #users[request.sid] = {"username": username, "avatar": avatar_url, "sid": request.sid}
-        connected_users[request.sid] = {"id": user.id,
+        connected_users[username] = {"id": user.id,
                                         "username": username,
                                         "full_name": full_name,
                                         "avatar": avatar_url,
@@ -53,9 +48,14 @@ def initialize_sockets():
 
     @socketio.on("disconnect")
     def handle_disconnect():
-        print("disconnected")
-        print(request.headers["username"])
-        user = connected_users.pop(request.sid, None)
+        for k, v in connected_users.items():
+            print(k)
+            print(v)
+            if v["sid"] == request.sid:
+                username = k
+
+        connected_users.pop(username, None)
+        #connected_users.pop(request.sid, None)
 
         emit("user_left", {"users": connected_users}, broadcast=True)
 
@@ -64,11 +64,13 @@ def initialize_sockets():
 
     @socketio.on("send_message")
     def handle_send_message(msg):
-        print(request.headers["authorization"])
-        print(request.headers["username"])
+        user = connected_users.get(msg["username"])
         print(msg)
-
-        user = connected_users.get(request.sid)
+        print(user)
+        chat_history_item = ChatHistoryItem(msg["username"], msg["message"], msg["sid"], user["full_name"])
+        chat_history_item.avatar = user["avatar"]
+        db.session.add(chat_history_item)
+        db.session.commit()
         if user:
             emit("new_message",
                  {"username": user["username"],

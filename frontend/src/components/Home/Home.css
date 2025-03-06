@@ -1,0 +1,16 @@
+.scrollbar-style {
+    overflow: auto;
+}
+
+.scrollbar-style::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-style::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
+}
+
+.scrollbar-style::-webkit-scrollbar-thumb {
+    background-color: var(--global-color);
+    outline: 1px solid goldenrod;
+}

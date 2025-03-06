@@ -1,6 +1,5 @@
 from flask import Flask, request
-from flask_socketio import emit
-import random
+
 
 from src.extensions.extensions import bcrypt, db, jwt, cors, socketio
 import json

@@ -7,6 +7,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
+    avatar = db.Column(db.String, nullable=False)
 
     def __init__(self, email_address, password, first_name, last_name):
         self.email_address = email_address
@@ -19,5 +20,6 @@ class User(db.Model):
             "email_address": self.email_address,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "user_id": self.user_id
+            "user_id": self.user_id,
+            "avatar": self.avatar
         }
