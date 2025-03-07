@@ -67,7 +67,7 @@ def initialize_sockets():
         user = connected_users.get(msg["username"])
         print(msg)
         print(user)
-        chat_history_item = ChatHistoryItem(msg["username"], msg["message"], msg["sid"], user["full_name"])
+        chat_history_item = ChatHistoryItem(msg["username"], msg["message"], msg["sid"], user["full_name"], msg["from_user"], msg["to_user"])
         chat_history_item.avatar = user["avatar"]
         db.session.add(chat_history_item)
         db.session.commit()

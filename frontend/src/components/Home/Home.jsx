@@ -26,7 +26,6 @@ const Home = () => {
         headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       })
       .then((res) => {
-        console.log(res.data);
         setChatHistory(res.data.contents);
 
         const socketInstance = io("http://localhost:5000", {
@@ -41,7 +40,6 @@ const Home = () => {
         setOwningUser(Cookies.get("user_id"));
 
         socketInstance.on("connect", () => {
-          console.log("Connected to server");
           setOwningUser(Cookies.get("user_id"));
         });
 
@@ -54,7 +52,6 @@ const Home = () => {
 
         if (!socketInstance.hasListeners("user_joined")) {
           socketInstance.on("user_joined", (message) => {
-            console.log("list of users:", message);
             setConnectedUsers(message.users);
           });
         }
@@ -80,7 +77,6 @@ const Home = () => {
 
         return () => {
           if (socketInstance) {
-            console.log("disconnecting from the server");
             setOwningUser("");
             socketInstance.disconnect();
           }
@@ -105,6 +101,8 @@ const Home = () => {
         username: Cookies.get("user_id"),
         message: message,
         sid: socket.id,
+        from_user: owningUser,
+        to_user: isPrivateSession ? privateToUser : "all"
         //"token": Cookies.get("token")
       });
     }
@@ -138,6 +136,25 @@ const Home = () => {
 
   const showRooms = () => {
     setShowRoomsMenu(true)
+  }
+
+  const [isPrivateSession, setIsPrivateSession] = useState(false)
+  const [privateToUser, setPrivateToUser] = useState("")
+
+  const chatWithSpecificUser = (toUser) => {
+
+    axios.get(`http://localhost:5000/api/v1/users/special-chat/${owningUser}/${toUser}`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
+    })
+    .then((res) => {
+      console.log(res)
+      setIsPrivateSession(true)
+      setPrivateToUser(toUser)
+      setChatHistory([...res.data.contents]);
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   return (
@@ -175,6 +192,7 @@ const Home = () => {
       <div
         key={connectedUsers[key].id}
         className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2"
+        onClick={() => chatWithSpecificUser(connectedUsers[key].username)}
       >
         <img
           src={connectedUsers[key].avatar}
@@ -257,9 +275,6 @@ logout
         <div className="relative flex flex-col justify-center items-center w-[85%] h-full px-4">
           <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style">
             {chatHistory.map((msg) => {
-              console.log(msg.username == owningUser);
-              console.log(msg);
-
               if (msg.username == owningUser) {
                 return (
                   <div className="w-full flex justify-start pl-10">
@@ -332,7 +347,7 @@ logout
 
               <button
                 className="btn absolute right-0 top-0 h-full flex justify-center items-center"
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
               >
                 <span className="material-symbols-rounded text-3xl">send</span>
               </button>

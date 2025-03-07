@@ -7,12 +7,16 @@ class ChatHistoryItem(db.Model):
     sid = db.Column(db.String, nullable=False)
     full_name = db.Column(db.String, nullable=False)
     avatar = db.Column(db.String, nullable=False)
+    from_user = db.Column(db.String, nullable=False)
+    to_user = db.Column(db.String, nullable=False)
 
-    def __init__(self, username, message, sid, full_name):
+    def __init__(self, username, message, sid, full_name, from_user, to_user):
         self.username = username
         self.message = message
         self.sid = sid
         self.full_name = full_name
+        self.from_user = from_user
+        self.to_user = to_user
 
     def to_dict(self):
         return {
@@ -20,5 +24,7 @@ class ChatHistoryItem(db.Model):
             "message": self.message,
             "sid": self.sid,
             "avatar": self.avatar,
-            "full_name": self.full_name
+            "full_name": self.full_name,
+            "from_user": self.from_user,
+            "to_user": self.to_user
         }
