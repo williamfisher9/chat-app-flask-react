@@ -1,25 +1,24 @@
-import axios from 'axios';
-import { useRef, useState } from 'react';
-import { useEffect } from 'react';
-import { io } from 'socket.io-client';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-import Menu from '../Menu/Menu';
+import axios from "axios";
+import { useRef, useState } from "react";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
+import Cookies from "js-cookie";
+import { Link, useNavigate } from "react-router-dom";
 
-import './Home.css'
+import "./Home.css";
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const Home = () => {
-  const navigate = useNavigate(null)
+  const navigate = useNavigate(null);
   const bottomOfChatPanel = useRef();
-  const inputMessageField = useRef()
+  const inputMessageField = useRef();
 
-  const [chatHistory, setChatHistory] = useState([])
+  const [chatHistory, setChatHistory] = useState([]);
   const [socket, setSocket] = useState(null);
   const [connectedUsers, setConnectedUsers] = useState({});
-  const [message, setMessage] = useState("")
-  const [owningUser, setOwningUser] = useState("")
+  const [message, setMessage] = useState("");
+  const [owningUser, setOwningUser] = useState("");
 
   useEffect(() => {
     axios
@@ -27,9 +26,8 @@ const Home = () => {
         headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       })
       .then((res) => {
-        
-        console.log(res.data)
-        setChatHistory(res.data.contents)
+        console.log(res.data);
+        setChatHistory(res.data.contents);
 
         const socketInstance = io("http://localhost:5000", {
           autoConnect: true,
@@ -40,11 +38,11 @@ const Home = () => {
         });
 
         setSocket(socketInstance);
-        setOwningUser(Cookies.get("user_id"))
+        setOwningUser(Cookies.get("user_id"));
 
         socketInstance.on("connect", () => {
           console.log("Connected to server");
-          setOwningUser(Cookies.get("user_id"))
+          setOwningUser(Cookies.get("user_id"));
         });
 
         const addMessageToChatHistory = (msg) =>
@@ -63,15 +61,27 @@ const Home = () => {
 
         if (!socketInstance.hasListeners("user_left")) {
           socketInstance.on("user_left", (message) => {
-            console.log("list of users:", message);
             setConnectedUsers(message.users);
+
+            /*let owningUserExists = false;
+
+            for (const username in message.users) {
+              if(owningUser == username){
+                owningUserExists = true;
+              }
+              //console.log(`${property}: ${message.users[property]}`);
+              }
+
+              if(!owningUserExists){
+                navigate("/login")
+              }*/
           });
         }
 
         return () => {
           if (socketInstance) {
             console.log("disconnecting from the server");
-            setOwningUser("")
+            setOwningUser("");
             socketInstance.disconnect();
           }
         };
@@ -81,15 +91,13 @@ const Home = () => {
       });
   }, []);
 
-
   useEffect(() => {
-    bottomOfChatPanel.current.scrollIntoView()
-  }, [chatHistory])
+    bottomOfChatPanel.current.scrollIntoView();
+  }, [chatHistory]);
 
   const handleKeyDown = (event) => {
-    if(event.key == "Enter") 
-      sendMessage()
-  }
+    if (event.key == "Enter") sendMessage();
+  };
 
   const sendMessage = () => {
     if (socket && message) {
@@ -106,52 +114,151 @@ const Home = () => {
   };
 
   const handleConnect = () => {
-    socket.connect()
-  }
+    socket.connect();
+  };
 
   const handleDisconnect = () => {
     socket.disconnect();
+  };
+
+  const signUserOut = () => {
+    Cookies.remove("token");
+    Cookies.remove("user_id");
+    Cookies.remove("email_address");
+    handleDisconnect();
+    navigate("/login");
+  };
+
+  const [showConnectedUsersMenu, setShowConnectedUsersMenu] = useState(false)
+  const [showRoomsMenu, setShowRoomsMenu] = useState(false)
+
+  const showConnectedUsers = () => {
+    setShowConnectedUsersMenu(true)
+  }
+
+  const showRooms = () => {
+    setShowRoomsMenu(true)
   }
 
   return (
     <div className="w-full">
-      {
-        socket != null ?
-        <Menu handleDisconnect={handleDisconnect} socketId={socket.id}/>
-        :
-        <Menu handleDisconnect={handleDisconnect}/>
-      }
-
       {/*<div className="mt-24 flex gap-4 justify-center items-center">
           <button className='btn' onClick={handleConnect}>RECONNECT</button>
         </div>*/}
 
-      <div className="mt-[100px] flex h-[calc(100svh_-_130px)]">
-        <div className="w-[20%] h-full py-4 px-2 flex flex-col gap-2 border-r-2 border-[var(--global-color)] scrollbar-style">
-          {Object.keys(connectedUsers).map((key) => {
-            return (
-              <div
-                key={connectedUsers[key].id}
-                className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] h-[70px] px-2 flex justify-start items-center gap-2"
-              >
-                <img
-                  src={connectedUsers[key].avatar}
-                  className="size-14 rounded-full"
-                  alt="img"
-                />
-                <p className="text-[var(--global-color)] text-sm">
-                  {connectedUsers[key].full_name}
-                </p>
+      <div className="flex h-svh relative">
+        <div className="w-[15%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
+          <div className="flex justify-center items-center">
+            <Link to={"/home"}>
+              <img
+                src="logo_chat.png"
+                alt="logo"
+                className="h-6 cursor-pointer"
+              />
+            </Link>
+          </div>
+
+          <div className="flex flex-col gap-2 justify-start items-center h-[85%]">
+
+
+
+          
+
+{
+            showRoomsMenu ? 
+
+            null
+:
+
+  Object.keys(connectedUsers).map((key) => {
+    return (
+      <div
+        key={connectedUsers[key].id}
+        className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2"
+      >
+        <img
+          src={connectedUsers[key].avatar}
+          className="size-10 rounded-full"
+          alt="img"
+        />
+        <p className="text-[var(--global-color)] text-sm">
+          {connectedUsers[key].full_name}
+        </p>
+      </div>
+    );
+  })
+
+          }       
+          </div>
+
+          {
+            /*
+            <div className="flex flex-col gap-2 justify-start h-[85%] scrollbar-style">
+            {Object.keys(connectedUsers).map((key) => {
+              return (
+                <div
+                  key={connectedUsers[key].id}
+                  className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] h-[70px] px-2 flex justify-start items-center gap-2"
+                >
+                  <img
+                    src={connectedUsers[key].avatar}
+                    className="size-14 rounded-full"
+                    alt="img"
+                  />
+                  <p className="text-[var(--global-color)] text-sm">
+                    {connectedUsers[key].full_name}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+            
+            */
+          }
+
+          <div className="flex justify-center items-center flex-col gap-2">
+            {
+              showRoomsMenu ? 
+
+              <div className="flex gap-1 w-full">
+<button className="btn w-full h-8 flex justify-center items-center gap-1" onClick={() => {setShowConnectedUsersMenu(false); setShowRoomsMenu(false)}}>
+              <span class="material-symbols-rounded">
+arrow_back
+</span>BACK
+            </button>
+<button className="btn w-full h-8 text-center flex justify-center items-center gap-1" onClick={showConnectedUsers}>
+            <span class="material-symbols-rounded">
+add_circle
+</span>NEW
+</button>
+            
+              
+
               </div>
-            );
-          })}
+            : <button className="btn w-full h-10 flex justify-center items-center gap-1" onClick={showRooms}>
+            <span class="material-symbols-rounded">
+meeting_room
+</span>ROOMS
+            </button>
+            }
+            <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={signUserOut}>
+            <span class="material-symbols-rounded">
+logout
+</span> SIGN OUT
+            </button>
+            {socket != null ? (
+              <p className="text-[var(--global-color)] text-[10px]">
+                {socket.id}
+              </p>
+            ) : null}
+          </div>
         </div>
 
-        <div className="relative flex flex-col justify-center items-center w-[80%] h-full p-4">
+        <div className="relative flex flex-col justify-center items-center w-[85%] h-full px-4">
           <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style">
             {chatHistory.map((msg) => {
               console.log(msg.username == owningUser);
-              console.log(msg)
+              console.log(msg);
 
               if (msg.username == owningUser) {
                 return (
@@ -166,7 +273,7 @@ const Home = () => {
                         alt="img"
                       />
 
-                      <div className='absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10'></div>
+                      <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
 
                       <div className="flex gap-3 justify-start items-center">
                         <p className="text-gray-800 font-extrabold">
@@ -190,7 +297,7 @@ const Home = () => {
                         alt="img"
                       />
 
-                      <div className='absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10'></div>
+                      <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
 
                       <div className="flex gap-3 justify-start items-center">
                         <p className="text-[var(--global-color)] font-extrabold">
@@ -235,6 +342,6 @@ const Home = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Home
+export default Home;
