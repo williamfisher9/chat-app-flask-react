@@ -77,8 +77,10 @@ def initialize_sockets():
                   "full_name": user["full_name"],
                   "avatar": user["avatar"],
                   "message": msg["message"],
-                  "sid": msg["sid"]},
-                 broadcast=True
+                  "sid": msg["sid"],
+                  "from_user": msg["from_user"],
+                  "to_user": msg["to_user"]},
+                  broadcast=True
                  )
 
     @socketio.on("update_username")

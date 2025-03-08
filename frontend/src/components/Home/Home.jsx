@@ -23,7 +23,8 @@ const Home = () => {
   const [socket, setSocket] = useState(null);
   const [connectedUsers, setConnectedUsers] = useState({});
   const [message, setMessage] = useState("");
-  const [owningUser, setOwningUser] = useState("");
+  //const [owningUser, setOwningUser] = useState("");
+  const [showRoomsMenu, setShowRoomsMenu] = useState(false)
 
   useEffect(() => {
 
@@ -31,9 +32,7 @@ const Home = () => {
       headers: { Authorization: `Bearer ${Cookies.get("token")}` },
     })
     .then((res) => {
-      console.log(res)
-      setIsPrivateSession(true)
-      setPrivateToUser(params.dest_user)
+      //console.log(res)
       setChatHistory([...res.data.contents]);
     })
     .catch(err => {
@@ -62,16 +61,17 @@ const Home = () => {
 
     setSocket(socketInstance);
 
-    setOwningUser(Cookies.get("user_id"));
+    //setOwningUser(Cookies.get("user_id"));
 
     socketInstance.on("connect", () => {
-      setOwningUser(Cookies.get("user_id"));
+      //setOwningUser(Cookies.get("user_id"));
     });
 
     const addMessageToChatHistory = (msg) =>
       setChatHistory((prevMessages) => [...prevMessages, msg]);
 
     if (!socketInstance.hasListeners("new_message")) {
+      console.log("received a message")
       socketInstance.on("new_message", addMessageToChatHistory);
     }
 
@@ -89,7 +89,7 @@ const Home = () => {
 
     return () => {
       if (socketInstance) {
-        setOwningUser("");
+        //setOwningUser("");
         socketInstance.disconnect();
       }
     };
@@ -103,14 +103,14 @@ const Home = () => {
   };
 
   const sendMessage = () => {
+    console.log("sent a message")
     if (socket && message) {
       socket.emit("send_message", {
         username: Cookies.get("user_id"),
         message: message,
         sid: socket.id,
-        from_user: owningUser,
-        to_user: isPrivateSession ? privateToUser : "all"
-        //"token": Cookies.get("token")
+        from_user: params.source_user,
+        to_user: params.dest_user
       });
     }
 
@@ -130,15 +130,12 @@ const Home = () => {
     navigate("/login");
   };
 
-  const [showRoomsMenu, setShowRoomsMenu] = useState(false)
+  
 
   const showRooms = () => {
     setShowRoomsMenu(true)
   }
-
-  const [isPrivateSession, setIsPrivateSession] = useState(false)
-  const [privateToUser, setPrivateToUser] = useState("")
-
+  
   return (
     <div className="w-full">
       {/*<div className="mt-24 flex gap-4 justify-center items-center">
@@ -148,7 +145,7 @@ const Home = () => {
       <div className="flex h-svh relative">
         <div className="w-[15%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
           <div className="flex justify-center items-center">
-            <Link to={"/home"}>
+            <Link to={`/home/${params.source_user}/global`}>
               <img
                 src="logo_chat.png"
                 alt="logo"
@@ -163,7 +160,7 @@ const Home = () => {
           <div
                   key="global"
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => navigate(`/home/${owningUser}/global`)}
+                  onClick={() => navigate(`/home/${params.source_user}/global`)}
                 >
                   
                   <p className="text-[var(--global-color)] text-sm">
@@ -180,7 +177,7 @@ const Home = () => {
                 <div
                   key={connectedUsers[key].id}
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2 ${params.dest_user == connectedUsers[key].username ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => navigate(`/home/${owningUser}/${connectedUsers[key].username}`)}
+                  onClick={() => navigate(`/home/${params.source_user}/${connectedUsers[key].username}`)}
                 >
                   <img
                     src={connectedUsers[key].avatar}
@@ -262,55 +259,69 @@ logout
         <div className="relative flex flex-col justify-center items-center w-[85%] h-full px-4">
           <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style">
             {chatHistory.map((msg) => {
-              if (msg.username == owningUser) {
-                return (
-                  <div className="w-full flex justify-start pl-10" key={uuidv4()}>
-                    <div
-                      className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-[var(--global-color)]"
-                    >
-                      <img
-                        src={msg.avatar}
-                        className="absolute left-[-50px] size-10"
-                        alt="img"
-                      />
+              //console.log(msg.from_user == params.source_user,  msg.to_user == params.dest_user)
+              if ((msg.to_user == "global" && params.dest_user == "global") ||
+                (msg.from_user == params.source_user && msg.to_user == params.dest_user) || 
+              (msg.to_user != "global" && msg.from_user == params.dest_user && msg.to_user == params.source_user)) {
 
-                      <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
+                
 
-                      <div className="flex gap-3 justify-start items-center">
-                        <p className="text-gray-800 font-extrabold">
-                          {msg.full_name}
+
+                  if(msg.from_user == params.source_user)
+                {
+                  return (
+                    <div className="w-full flex justify-start pl-10" key={uuidv4()}>
+                      <div
+                        className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-[var(--global-color)]"
+                      >
+                        <img
+                          src={msg.avatar}
+                          className="absolute left-[-50px] size-10"
+                          alt="img"
+                        />
+  
+                        <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
+  
+                        <div className="flex gap-3 justify-start items-center">
+                          <p className="text-gray-800 font-extrabold">
+                            {msg.full_name}
+                          </p>
+                        </div>
+                        <p className="text-gray-800">{msg.message}</p>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="w-full flex justify-end">
+                      <div
+                        key={uuidv4()}
+                        className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-gray-800"
+                      >
+                        <img
+                          src={msg.avatar}
+                          className="absolute left-[-50px] size-10"
+                          alt="img"
+                        />
+  
+                        <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
+  
+                        <div className="flex gap-3 justify-start items-center">
+                          <p className="text-[var(--global-color)] font-extrabold">
+                            {msg.full_name}
+                          </p>
+                        </div>
+                        <p className="text-[var(--global-color)]">
+                          {msg.message}
                         </p>
                       </div>
-                      <p className="text-gray-800">{msg.message}</p>
                     </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <div className="w-full flex justify-end">
-                    <div
-                      key={uuidv4()}
-                      className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-gray-800"
-                    >
-                      <img
-                        src={msg.avatar}
-                        className="absolute left-[-50px] size-10"
-                        alt="img"
-                      />
+                  );
+                }
 
-                      <div className="absolute bg-[var(--global-color)] top-1 left-[-5px] w-6 h-6 rotate-45 -z-10"></div>
 
-                      <div className="flex gap-3 justify-start items-center">
-                        <p className="text-[var(--global-color)] font-extrabold">
-                          {msg.full_name}
-                        </p>
-                      </div>
-                      <p className="text-[var(--global-color)]">
-                        {msg.message}
-                      </p>
-                    </div>
-                  </div>
-                );
+
+
               }
             })}
 
