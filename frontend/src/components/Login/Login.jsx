@@ -40,7 +40,7 @@ const Login = () => {
                     Cookies.set("email_address", res.data.contents.email_address);
                     Cookies.set("user_id", res.data.contents.user_id);
                     setLoginRequestError("")
-                    navigate("/home")
+                    navigate(`/home/${res.data.contents.user_id}/global`)
                 }
             })
             .catch((err) => {

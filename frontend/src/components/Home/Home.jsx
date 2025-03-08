@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import "./Home.css";
 
@@ -11,8 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 
 const Home = () => {
   const navigate = useNavigate(null);
+  // for auto scrolling
   const bottomOfChatPanel = useRef();
+  // for message field focus
   const inputMessageField = useRef();
+
+  const params = useParams()
+
 
   const [chatHistory, setChatHistory] = useState([]);
   const [socket, setSocket] = useState(null);
@@ -21,75 +26,77 @@ const Home = () => {
   const [owningUser, setOwningUser] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/v1/users/validate-jwt-token", {
-        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-      })
-      .then((res) => {
-        setChatHistory(res.data.contents);
 
-        const socketInstance = io("http://localhost:5000", {
-          autoConnect: true,
-          extraHeaders: {
-            authorization: `bearer ${Cookies.get("token")}`,
-            username: Cookies.get("user_id"),
-          },
-        });
+    axios.get(`http://localhost:5000/api/v1/users/chat/${params.source_user}/${params.dest_user}`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
+    })
+    .then((res) => {
+      console.log(res)
+      setIsPrivateSession(true)
+      setPrivateToUser(params.dest_user)
+      setChatHistory([...res.data.contents]);
+    })
+    .catch(err => {
+      console.log(err)
+      if(err.status == 401 || err.status == 403 || err.status == 422)
+        navigate("/login")
+    })
 
-        setSocket(socketInstance);
-        setOwningUser(Cookies.get("user_id"));
+  }, [params])
 
-        socketInstance.on("connect", () => {
-          setOwningUser(Cookies.get("user_id"));
-        });
 
-        const addMessageToChatHistory = (msg) =>
-          setChatHistory((prevMessages) => [...prevMessages, msg]);
-
-        if (!socketInstance.hasListeners("new_message")) {
-          socketInstance.on("new_message", addMessageToChatHistory);
-        }
-
-        if (!socketInstance.hasListeners("user_joined")) {
-          socketInstance.on("user_joined", (message) => {
-            setConnectedUsers(message.users);
-          });
-        }
-
-        if (!socketInstance.hasListeners("user_left")) {
-          socketInstance.on("user_left", (message) => {
-            setConnectedUsers(message.users);
-
-            /*let owningUserExists = false;
-
-            for (const username in message.users) {
-              if(owningUser == username){
-                owningUserExists = true;
-              }
-              //console.log(`${property}: ${message.users[property]}`);
-              }
-
-              if(!owningUserExists){
-                navigate("/login")
-              }*/
-          });
-        }
-
-        return () => {
-          if (socketInstance) {
-            setOwningUser("");
-            socketInstance.disconnect();
-          }
-        };
-      })
-      .catch((err) => {
-        navigate("/login");
-      });
-  }, []);
 
   useEffect(() => {
     bottomOfChatPanel.current.scrollIntoView();
   }, [chatHistory]);
+
+
+  useEffect(() => {
+    const socketInstance = io("http://localhost:5000", {
+      autoConnect: true,
+      extraHeaders: {
+        authorization: `bearer ${Cookies.get("token")}`,
+        username: Cookies.get("user_id"),
+      },
+    });
+
+    setSocket(socketInstance);
+
+    setOwningUser(Cookies.get("user_id"));
+
+    socketInstance.on("connect", () => {
+      setOwningUser(Cookies.get("user_id"));
+    });
+
+    const addMessageToChatHistory = (msg) =>
+      setChatHistory((prevMessages) => [...prevMessages, msg]);
+
+    if (!socketInstance.hasListeners("new_message")) {
+      socketInstance.on("new_message", addMessageToChatHistory);
+    }
+
+    if (!socketInstance.hasListeners("user_joined")) {
+      socketInstance.on("user_joined", (message) => {
+        setConnectedUsers(message.users);
+      });
+    }
+
+    if (!socketInstance.hasListeners("user_left")) {
+      socketInstance.on("user_left", (message) => {
+        setConnectedUsers(message.users);
+      });
+    }
+
+    return () => {
+      if (socketInstance) {
+        setOwningUser("");
+        socketInstance.disconnect();
+      }
+    };
+  
+  }, []);
+
+  
 
   const handleKeyDown = (event) => {
     if (event.key == "Enter") sendMessage();
@@ -111,10 +118,6 @@ const Home = () => {
     inputMessageField.current.focus();
   };
 
-  const handleConnect = () => {
-    socket.connect();
-  };
-
   const handleDisconnect = () => {
     socket.disconnect();
   };
@@ -127,12 +130,7 @@ const Home = () => {
     navigate("/login");
   };
 
-  const [showConnectedUsersMenu, setShowConnectedUsersMenu] = useState(false)
   const [showRoomsMenu, setShowRoomsMenu] = useState(false)
-
-  const showConnectedUsers = () => {
-    setShowConnectedUsersMenu(true)
-  }
 
   const showRooms = () => {
     setShowRoomsMenu(true)
@@ -140,22 +138,6 @@ const Home = () => {
 
   const [isPrivateSession, setIsPrivateSession] = useState(false)
   const [privateToUser, setPrivateToUser] = useState("")
-
-  const chatWithSpecificUser = (toUser) => {
-
-    axios.get(`http://localhost:5000/api/v1/users/special-chat/${owningUser}/${toUser}`, {
-      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
-    })
-    .then((res) => {
-      console.log(res)
-      setIsPrivateSession(true)
-      setPrivateToUser(toUser)
-      setChatHistory([...res.data.contents]);
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
 
   return (
     <div className="w-full">
@@ -178,34 +160,39 @@ const Home = () => {
           <div className="flex flex-col gap-2 justify-start items-center h-[85%]">
 
 
-
+          <div
+                  key="global"
+                  className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
+                  onClick={() => navigate(`/home/${owningUser}/global`)}
+                >
+                  
+                  <p className="text-[var(--global-color)] text-sm">
+                    GLOBAL
+                  </p>
+                </div>
           
 
 {
-            showRoomsMenu ? 
+            !showRoomsMenu &&
 
-            null
-:
-
-  Object.keys(connectedUsers).map((key) => {
-    return (
-      <div
-        key={connectedUsers[key].id}
-        className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2"
-        onClick={() => chatWithSpecificUser(connectedUsers[key].username)}
-      >
-        <img
-          src={connectedUsers[key].avatar}
-          className="size-10 rounded-full"
-          alt="img"
-        />
-        <p className="text-[var(--global-color)] text-sm">
-          {connectedUsers[key].full_name}
-        </p>
-      </div>
-    );
-  })
-
+            Object.keys(connectedUsers).map((key) => {
+              return (
+                <div
+                  key={connectedUsers[key].id}
+                  className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2 ${params.dest_user == connectedUsers[key].username ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
+                  onClick={() => navigate(`/home/${owningUser}/${connectedUsers[key].username}`)}
+                >
+                  <img
+                    src={connectedUsers[key].avatar}
+                    className="size-10 rounded-full"
+                    alt="img"
+                  />
+                  <p className="text-[var(--global-color)] text-sm">
+                    {connectedUsers[key].full_name}
+                  </p>
+                </div>
+              );
+            })
           }       
           </div>
 
@@ -239,13 +226,13 @@ const Home = () => {
               showRoomsMenu ? 
 
               <div className="flex gap-1 w-full">
-<button className="btn w-full h-8 flex justify-center items-center gap-1" onClick={() => {setShowConnectedUsersMenu(false); setShowRoomsMenu(false)}}>
-              <span class="material-symbols-rounded">
+<button className="btn w-full h-8 flex justify-center items-center gap-1" onClick={() => {setShowRoomsMenu(false)}}>
+              <span className="material-symbols-rounded">
 arrow_back
 </span>BACK
             </button>
-<button className="btn w-full h-8 text-center flex justify-center items-center gap-1" onClick={showConnectedUsers}>
-            <span class="material-symbols-rounded">
+<button className="btn w-full h-8 text-center flex justify-center items-center gap-1">
+            <span className="material-symbols-rounded">
 add_circle
 </span>NEW
 </button>
@@ -254,13 +241,13 @@ add_circle
 
               </div>
             : <button className="btn w-full h-10 flex justify-center items-center gap-1" onClick={showRooms}>
-            <span class="material-symbols-rounded">
+            <span className="material-symbols-rounded">
 meeting_room
 </span>ROOMS
             </button>
             }
             <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={signUserOut}>
-            <span class="material-symbols-rounded">
+            <span className="material-symbols-rounded">
 logout
 </span> SIGN OUT
             </button>
@@ -277,9 +264,8 @@ logout
             {chatHistory.map((msg) => {
               if (msg.username == owningUser) {
                 return (
-                  <div className="w-full flex justify-start pl-10">
+                  <div className="w-full flex justify-start pl-10" key={uuidv4()}>
                     <div
-                      key={uuidv4()}
                       className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-[var(--global-color)]"
                     >
                       <img

@@ -57,13 +57,19 @@ def validate_jwt_token():
     response_message = ResponseMessage([chat_item.to_dict() for chat_item in chat_history], 200)
     return response_message.create_response_message(), 200
 
-@user_blueprint.route("special-chat/<from_user>/<to_user>", methods=['GET'])
+@user_blueprint.route("chat/<from_user>/<to_user>", methods=['GET'])
 @jwt_required()
 def get_special_chat(from_user, to_user):
-    chat_history1 = ChatHistoryItem.query.filter_by(from_user=from_user, to_user=to_user).all()
-    chat_history2 = ChatHistoryItem.query.filter_by(from_user=to_user, to_user=from_user).all()
-
-    chat_history = chat_history1 + chat_history2
+    if to_user == "global":
+        chat_history1 = ChatHistoryItem.query.filter_by(to_user=to_user).all()
+        chat_history = chat_history1
+    elif from_user == to_user:
+        chat_history1 = ChatHistoryItem.query.filter_by(from_user=from_user, to_user=to_user).all()
+        chat_history = chat_history1
+    else:
+        chat_history1 = ChatHistoryItem.query.filter_by(from_user=from_user, to_user=to_user).all()
+        chat_history2 = ChatHistoryItem.query.filter_by(from_user=to_user, to_user=from_user).all()
+        chat_history = chat_history1 + chat_history2
 
     response_message = ResponseMessage([chat_item.to_dict() for chat_item in chat_history], 200)
     return response_message.create_response_message(), 200
