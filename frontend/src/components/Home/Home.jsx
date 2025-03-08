@@ -5,6 +5,8 @@ import { io } from "socket.io-client";
 import Cookies from "js-cookie";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import logoImg from '../../assets/logo_chat.png'
+
 import "./Home.css";
 
 import { v4 as uuidv4 } from "uuid";
@@ -147,7 +149,7 @@ const Home = () => {
           <div className="flex justify-center items-center">
             <Link to={`/home/${params.source_user}/global`}>
               <img
-                src="logo_chat.png"
+                src={logoImg}
                 alt="logo"
                 className="h-6 cursor-pointer"
               />
@@ -193,30 +195,7 @@ const Home = () => {
           }       
           </div>
 
-          {
-            /*
-            <div className="flex flex-col gap-2 justify-start h-[85%] scrollbar-style">
-            {Object.keys(connectedUsers).map((key) => {
-              return (
-                <div
-                  key={connectedUsers[key].id}
-                  className="cursor-pointer bg-yellow-500/10 rounded-md w-[90%] h-[70px] px-2 flex justify-start items-center gap-2"
-                >
-                  <img
-                    src={connectedUsers[key].avatar}
-                    className="size-14 rounded-full"
-                    alt="img"
-                  />
-                  <p className="text-[var(--global-color)] text-sm">
-                    {connectedUsers[key].full_name}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-            
-            */
-          }
+          
 
           <div className="flex justify-center items-center flex-col gap-2">
             {
