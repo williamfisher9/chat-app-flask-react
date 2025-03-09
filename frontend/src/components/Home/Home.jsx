@@ -26,7 +26,8 @@ const Home = () => {
   const [connectedUsers, setConnectedUsers] = useState({});
   const [message, setMessage] = useState("");
   //const [owningUser, setOwningUser] = useState("");
-  const [showRoomsMenu, setShowRoomsMenu] = useState(false)
+  const [windowSize, setWindowSize] = useState(window.innerWidth)
+  const [showSmallMenu, setShowSmallMenu] = useState(false)
 
   useEffect(() => {
 
@@ -45,7 +46,7 @@ const Home = () => {
 
   }, [params])
 
-
+  
 
   useEffect(() => {
     bottomOfChatPanel.current.scrollIntoView();
@@ -53,8 +54,14 @@ const Home = () => {
 
 
   useEffect(() => {
+
+    window.addEventListener("resize", () => {
+      setWindowSize(window.innerWidth)
+    })
+
     const socketInstance = io("http://localhost:5000", {
       autoConnect: true,
+      query: { token: `${Cookies.get("token")}` },
       extraHeaders: {
         authorization: `bearer ${Cookies.get("token")}`,
         username: Cookies.get("user_id"),
@@ -94,6 +101,10 @@ const Home = () => {
         //setOwningUser("");
         socketInstance.disconnect();
       }
+
+      window.removeEventListener("resize", () => {
+        setWindowSize(window.innerWidth)
+      })
     };
   
   }, []);
@@ -132,10 +143,12 @@ const Home = () => {
     navigate("/login");
   };
 
-  
+  const changePassword = () => {
+    navigate(`/change-password/${params.source_user}`);
+  }
 
-  const showRooms = () => {
-    setShowRoomsMenu(true)
+  const toggleSmallMenu = () => {
+    setShowSmallMenu((prev) => !prev)
   }
   
   return (
@@ -145,7 +158,12 @@ const Home = () => {
         </div>*/}
 
       <div className="flex h-svh relative">
-        <div className="w-[15%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
+
+
+        {
+          windowSize > 800 ? 
+          
+  <div className="max-[1000px]:w-[40%] min-[1000px]:w-[25%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
           <div className="flex justify-center items-center">
             <Link to={`/home/${params.source_user}/global`}>
               <img
@@ -172,7 +190,7 @@ const Home = () => {
           
 
 {
-            !showRoomsMenu &&
+            
 
             Object.keys(connectedUsers).map((key) => {
               return (
@@ -198,30 +216,11 @@ const Home = () => {
           
 
           <div className="flex justify-center items-center flex-col gap-2">
-            {
-              showRoomsMenu ? 
-
-              <div className="flex gap-1 w-full">
-<button className="btn w-full h-8 flex justify-center items-center gap-1" onClick={() => {setShowRoomsMenu(false)}}>
-              <span className="material-symbols-rounded">
-arrow_back
-</span>BACK
-            </button>
-<button className="btn w-full h-8 text-center flex justify-center items-center gap-1">
+          <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={changePassword}>
             <span className="material-symbols-rounded">
-add_circle
-</span>NEW
-</button>
-            
-              
-
-              </div>
-            : <button className="btn w-full h-10 flex justify-center items-center gap-1" onClick={showRooms}>
-            <span className="material-symbols-rounded">
-meeting_room
-</span>ROOMS
+keyboard_lock
+</span>CHANGE PASSWORD
             </button>
-            }
             <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={signUserOut}>
             <span className="material-symbols-rounded">
 logout
@@ -235,7 +234,131 @@ logout
           </div>
         </div>
 
-        <div className="relative flex flex-col justify-center items-center w-[85%] h-full px-4">
+          :
+
+        <div className="absolute w-full h-[50px] flex justify-between items-center px-10 py-7 z-50 select-none">
+        <img
+                        src={logoImg}
+                        alt="logo"
+                        className="h-6 cursor-pointer"
+                      />
+        <span className="material-symbols-rounded text-[var(--global-color)] text-3xl cursor-pointer p-1 bg-gray-900 hover:bg-gray-950 rounded-md" 
+        onClick={toggleSmallMenu}>
+        menu
+        </span>
+        </div>
+
+        }
+
+
+
+
+
+      {
+
+        showSmallMenu && <div className="absolute z-50 bg-gray-800 top-0 left-0 w-full h-full flex flex-col justify-between gap-4 px-10">
+          <div className="relative flex justify-center items-center">
+          <span className="absolute top-[5px] right-[5px] material-symbols-rounded text-[var(--global-color)] text-3xl cursor-pointer bg-gray-900 hover:bg-gray-950 rounded-md" 
+        onClick={toggleSmallMenu}>
+        close
+        </span>
+          </div>
+
+
+
+
+          <div className="flex flex-col gap-2 justify-start items-center h-[85%] pt-10">
+
+
+          <div
+                  key="global"
+                  className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
+                  onClick={() => {navigate(`/home/${params.source_user}/global`); setShowSmallMenu(prev => !prev)}}
+                >
+                  
+                  <p className="text-[var(--global-color)] text-sm">
+                    GLOBAL
+                  </p>
+                </div>
+
+                {
+            
+
+            Object.keys(connectedUsers).map((key) => {
+              return (
+                <div
+                  key={connectedUsers[key].id}
+                  className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2 ${params.dest_user == connectedUsers[key].username ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
+                  onClick={() => {navigate(`/home/${params.source_user}/${connectedUsers[key].username}`); setShowSmallMenu(prev => !prev)}}
+                >
+                  <img
+                    src={connectedUsers[key].avatar}
+                    className="size-10 rounded-full"
+                    alt="img"
+                  />
+                  <p className="text-[var(--global-color)] text-sm">
+                    {connectedUsers[key].full_name}
+                  </p>
+                </div>
+              );
+            })
+          } 
+          
+
+      
+          </div>
+
+
+
+
+
+
+
+          <div className="flex justify-center items-center flex-col gap-2 px-2">
+
+          <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={changePassword}>
+            <span className="material-symbols-rounded">
+            keyboard_lock
+</span>CHANGE PASSWORD
+            </button>
+
+            
+            <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={signUserOut}>
+            <span className="material-symbols-rounded">
+logout
+</span> SIGN OUT
+            </button>
+            {socket != null ? (
+              <p className="text-[var(--global-color)] text-[10px]">
+                {socket.id}
+              </p>
+            ) : null}
+          </div>
+
+
+
+
+
+
+
+
+
+
+      </div>
+
+        
+
+      }
+
+
+
+
+
+
+
+
+
+        <div className="relative flex flex-col justify-center items-center  h-full px-4 max-[1000px]:w-full min-[1000px]:w-[85%]">
           <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style">
             {chatHistory.map((msg) => {
               //console.log(msg.from_user == params.source_user,  msg.to_user == params.dest_user)
@@ -249,9 +372,9 @@ logout
                   if(msg.from_user == params.source_user)
                 {
                   return (
-                    <div className="w-full flex justify-start pl-10" key={uuidv4()}>
+                    <div className="w-full flex justify-start min-[500px]:pl-10" key={uuidv4()}>
                       <div
-                        className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-[var(--global-color)]"
+                        className=" relative min-[500px]:w-[45%] max-[500px]:scale-75 border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-[var(--global-color)]"
                       >
                         <img
                           src={msg.avatar}
@@ -275,7 +398,7 @@ logout
                     <div className="w-full flex justify-end">
                       <div
                         key={uuidv4()}
-                        className="relative w-[30%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-gray-800"
+                        className="relative w-[45%] border-2 border-[var(--global-color)] rounded-md p-3 my-2 bg-gray-800"
                       >
                         <img
                           src={msg.avatar}

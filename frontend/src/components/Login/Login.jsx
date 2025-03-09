@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Login.css'
 import { useState } from 'react';
 import axios from 'axios';
@@ -9,6 +9,8 @@ const Login = () => {
     const [formFields, setFormFields] = useState({emailAddress: "", password: ""})
     const [formFieldsErrors, setFormFieldsErrors] = useState({emailAddress: "", password: ""})
     const [loginRequestError, setLoginRequestError] = useState("");
+
+    const {state} = useLocation();
 
     const handleFieldChange = () => {
         setFormFields({...formFields, [event.target.name]: event.target.value})
@@ -59,6 +61,11 @@ const Login = () => {
 
             <img src='logo_chat.png' alt='logo' className='h-16' />
 
+            {
+            state?.message && 
+            <p className='text-gray-900 text-[16px] bg-[var(--global-color)] px-2 py-1 rounded-sm'>{state?.message}</p>
+            }
+
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='text' placeholder='Email Address' className='text-field' name='emailAddress' onChange={handleFieldChange}/>
                 <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">person</span>
@@ -72,7 +79,7 @@ const Login = () => {
             </div>
 
             <div className='text-[var(--global-color)] underline w-[90%] '>
-                <Link to={"/"}>
+                <Link to={"/forgot-password"}>
                     <span>Forgot password?</span>
                 </Link>
             </div>
@@ -84,6 +91,8 @@ const Login = () => {
                 <p className='text-red-500'>{loginRequestError}</p> :
                 null
             }
+
+
 
             <span className='text-white'>Don't have an account? <a href='/register' className='underline text-[var(--global-color)]'>Sign Up</a></span>
         </form>

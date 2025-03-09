@@ -1,7 +1,10 @@
+import os
+
 from flask import Blueprint, request
+from flask_mail import Message
 from flask_socketio import emit
 
-from src.extensions.extensions import db, bcrypt, socketio
+from src.extensions.extensions import db, bcrypt, socketio, mail
 from src.messages.response_message import ResponseMessage
 from src.model.chat_history_item import ChatHistoryItem
 from src.model.user import User
@@ -74,7 +77,45 @@ def get_special_chat(from_user, to_user):
     response_message = ResponseMessage([chat_item.to_dict() for chat_item in chat_history], 200)
     return response_message.create_response_message(), 200
 
+@user_blueprint.route("/forgot-password", methods=['POST'])
+def forgot_password_handler():
+    data = request.get_json()
 
+    user = User.query.filter_by(email_address=data["email_address"]).first()
+
+    if not user:
+        response_message = ResponseMessage("Username was not found", 404)
+        return response_message.create_response_message(), 404
+
+    msg = Message(user.user_id, sender=os.environ.get('MAIL_USERNAME'), recipients=[data["email_address"]])
+    msg.html = f"""
+    <h1>REQUEST TO RESET PASSWORD</h1>
+    """
+    mail.send(msg)
+
+    response_message = ResponseMessage("CHECK YOUR INBOX FOR AN EMAIL TO RESET PASSWORD", 200)
+    return response_message.create_response_message(), 200
+
+@user_blueprint.route("/change-password", methods=['POST'])
+def change_password_handler():
+    data = request.get_json()
+
+    user = User.query.filter_by(user_id=data["user_id"]).first()
+
+    if not user:
+        response_message = ResponseMessage("Username was not found", 404)
+        return response_message.create_response_message(), 404
+
+    if not bcrypt.check_password_hash(user.password, data['current_password']):
+        response_message = ResponseMessage("Your current password is incorrect", 404)
+        return response_message.create_response_message(), 404
+
+    user.password = bcrypt.generate_password_hash(data['new_password'])
+    db.session.add(user)
+    db.session.commit()
+
+    response_message = ResponseMessage("LOGIN WITH THE NEW PASSWORD", 200)
+    return response_message.create_response_message(), 200
 
 """
 @user_blueprint.route("/send", methods=['POST'])

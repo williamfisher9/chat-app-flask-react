@@ -1,13 +1,12 @@
-from flask_jwt_extended import jwt_required, get_jwt_identity
+import jwt
 
 from src.extensions.extensions import socketio, db
-import random
 from flask import request
 from flask_socketio import emit
-from flask_jwt_extended import verify_jwt_in_request
 
 from src.model.chat_history_item import ChatHistoryItem
 from src.model.user import User
+from src.utils.utils import verify_token
 
 # store connected users
 # key is socketid and value is username and avatar url
@@ -64,9 +63,9 @@ def initialize_sockets():
 
     @socketio.on("send_message")
     def handle_send_message(msg):
+        #print(request.args.get('token'))
+        #print(verify_token(request.args.get('token')))
         user = connected_users.get(msg["username"])
-        print(msg)
-        print(user)
         chat_history_item = ChatHistoryItem(msg["username"], msg["message"], msg["sid"], user["full_name"], msg["from_user"], msg["to_user"])
         chat_history_item.avatar = user["avatar"]
         db.session.add(chat_history_item)

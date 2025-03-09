@@ -7,5 +7,9 @@
   "MAX_CONTENT_LENGTH": 16000000,
   "SQLALCHEMY_DATABASE_URI": "sqlite:///C://Users//william.fisher//Desktop//app_files//app_db3.db",
   "UPLOAD_FOLDER": "C://Users//william.fisher//Desktop//app_files//images",
-  "LOGS_DIRECTORY": "C://Users//william.fisher//Desktop//app_files"
+  "LOGS_DIRECTORY": "C://Users//william.fisher//Desktop//app_files",
+  "MAIL_SERVER": "smtp.gmail.com",
+  "MAIL_PORT": 465,
+  "MAIL_USE_TLS": false,
+  "MAIL_USE_SSL": true
 }
