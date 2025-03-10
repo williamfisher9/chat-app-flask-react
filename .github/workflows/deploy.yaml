@@ -51,7 +51,7 @@ jobs:
           ls -la ~
           source ~/.bashrc          
           pkill python3
-          cd /home/ubuntu/chat-app-flask-react/backend
+          cd /home/ubuntu/actions-runner/_work/chat-app-flask-react/chat-app-flask-react/backend
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
