@@ -49,9 +49,10 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing home directory:"
           ls -la ~
-          source ~/.profile
+          source ~/.bashrc
           
           cd /home/ubuntu/chat-app-flask-react/frontend
+          ls -al /home/ubuntu/chat-app-flask-react/frontend
           npm ci
           npm run build --if-present
           sudo rm -rf /var/www/html/*
