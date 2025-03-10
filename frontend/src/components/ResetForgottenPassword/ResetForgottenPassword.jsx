@@ -32,7 +32,7 @@ const ResetForgottenPassword = () => {
         setFormFieldsErrors(newErrors);
 
         if(!hasErrors){
-            axios.post("http://localhost:5000/api/v1/users/reset-password", {"user_id": params.source_user, "token": params.token, "new_password": formFields.newPassword})
+            axios.post("http://3.145.152.55:3030/api/v1/users/reset-password", {"user_id": params.source_user, "token": params.token, "new_password": formFields.newPassword})
             .then((res) => {
                 if(res.status == 200){
                     console.log(res)

@@ -35,7 +35,7 @@ const Login = () => {
 
 
         if(!hasErrors){
-            axios.post("http://localhost:5000/api/v1/users/signin", {"email_address": formFields.emailAddress, "password": formFields.password})
+            axios.post("http://3.145.152.55:3030/api/v1/users/signin", {"email_address": formFields.emailAddress, "password": formFields.password})
             .then((res) => {
                 if(res.status == 200){
                     Cookies.set("token", res.data.contents.token);
