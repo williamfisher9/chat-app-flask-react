@@ -53,7 +53,7 @@ const Login = () => {
     }
 
     return <div className='w-full min-h-screen flex justify-center items-center'>
-        <form className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
+        <form className='w-[500px] max-[550]:w-[400px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
         <div className='w-full flex'>
                 <Link to="/login" className={`w-[50%] h-[60px] bg-[var(--global-color)]  border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign In</Link>
                 <Link to="/register" className={`w-[50%] h-[60px] text-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign Up</Link>
