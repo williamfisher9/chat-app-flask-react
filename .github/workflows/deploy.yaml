@@ -5,9 +5,9 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  frontend:
     runs-on: self-hosted
+    name: deploying frontend
     defaults:
       run:
         working-directory: 'frontend'
@@ -15,7 +15,6 @@ jobs:
       matrix:
         node-version: [22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -31,9 +30,9 @@ jobs:
     - name: Copy dist folder to /var/www/html
       run: sudo cp -r dist/* /var/www/html
       
-  deploy:
+  backend:
     runs-on: ubuntu-latest
-    name: deployment on EC2 instance
+    name: deploying backend
 
     steps:
       - name: Checkout the files to github runner
