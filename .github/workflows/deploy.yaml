@@ -1,0 +1,59 @@
+name: python-flask app deployment
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: deployment on EC2 instance
+
+    steps:
+      - name: Checkout the files to github runner
+        uses: actions/checkout@v2
+
+      - name: Prepare instance
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
+          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
+        run: | 
+          echo "$SSH_PRIVATE_KEY" > private_key_ec2.pem && chmod 600 private_key_ec2.pem
+          ssh -o StrictHostKeyChecking=no -i private_key_ec2.pem ${REMOTE_USER}@${REMOTE_HOST} '
+          echo "Current directory: $(pwd)"
+          echo "Listing home directory:"
+          ls -la ~
+          cd /home/ubuntu && sudo rm -rf chat-app-flask-react && 
+          mkdir chat-app-flask-react &&
+          mkdir -p app_files/images
+          '
+
+      - name: Clone repo to EC2 using rsync
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SOURCE: "./"
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
+          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
+          TARGET: "/home/ubuntu/chat-app-flask-react"
+
+      - name: Deploy them
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
+          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
+        run: | 
+          echo "$SSH_PRIVATE_KEY" > private_key_ec2.pem && chmod 600 private_key_ec2.pem
+          ssh -o StrictHostKeyChecking=no -i private_key_ec2.pem ${REMOTE_USER}@${REMOTE_HOST} '
+          echo "Current directory: $(pwd)"
+          echo "Listing home directory:"
+          ls -la ~
+          source ~/.profile
+          pkill python3
+          cd /home/ubuntu/chat-app-flask-react/backend
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          nohup python3 -m src > log.txt 2>&1 &
+          '
