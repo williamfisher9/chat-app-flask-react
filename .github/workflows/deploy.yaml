@@ -5,6 +5,30 @@ on:
     branches: [ master ]
 
 jobs:
+  build:
+
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: cd /home/ubuntu/chat-app-flask-react/frontend
+    - run: npm ci
+    - run: npm run build --if-present
+    - name: Clear contents of /var/www/html
+      run: sudo rm -rf /var/www/html/*
+    - name: Copy dist folder to /var/www/html
+      run: sudo cp -r dist/* /var/www/html
+      
   deploy:
     runs-on: ubuntu-latest
     name: deployment on EC2 instance
@@ -13,7 +37,7 @@ jobs:
       - name: Checkout the files to github runner
         uses: actions/checkout@v2
 
-      - name: Prepare instance
+      - name: Deploy backend
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
           REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
@@ -24,40 +48,7 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing home directory:"
           ls -la ~
-          cd /home/ubuntu && sudo rm -rf chat-app-flask-react && 
-          mkdir chat-app-flask-react &&
-          mkdir -p app_files/images
-          '
-
-      - name: Clone repo to EC2 using rsync
-        uses: easingthemes/ssh-deploy@v2.1.5
-        env:
-          SOURCE: "./"
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
-          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
-          TARGET: "/home/ubuntu/chat-app-flask-react"
-
-      - name: Deploy them
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.EC2_IP_ADDRESS }}
-          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
-        run: | 
-          echo "$SSH_PRIVATE_KEY" > private_key_ec2.pem && chmod 600 private_key_ec2.pem
-          ssh -o StrictHostKeyChecking=no -i private_key_ec2.pem ${REMOTE_USER}@${REMOTE_HOST} '
-          echo "Current directory: $(pwd)"
-          echo "Listing home directory:"
-          ls -la ~
-          source ~/.bashrc
-          
-          cd /home/ubuntu/chat-app-flask-react/frontend
-          ls -al /home/ubuntu/chat-app-flask-react/frontend
-          npm ci
-          npm run build --if-present
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html
-          
+          source ~/.bashrc          
           pkill python3
           cd /home/ubuntu/chat-app-flask-react/backend
           python3 -m venv venv
