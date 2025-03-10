@@ -1,15 +1,15 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import './ChangePassword.css'
+import './ResetForgottenPassword.css'
 import { useState } from 'react';
 import axios from 'axios';
 
 import logoImg from '../../assets/logo_chat.png'
 
-const ChangePassword = () => {
+const ResetForgottenPassword = () => {
     const navigate = useNavigate();
     const [formFields, setFormFields] = useState({userId: "", currentPassword: "", newPassword: ""})
     const [formFieldsErrors, setFormFieldsErrors] = useState({userId: "", currentPassword: "", newPassword: ""})
-    const [forgotPasswordRequestError, setForgotPasswordRequestError] = useState("");
+    const [resetForgottenPasswordRequestError, setResetForgottenPasswordRequestError] = useState("");
 
     const params = useParams();
 
@@ -24,11 +24,6 @@ const ChangePassword = () => {
         let newErrors = {};
 
 
-        if(formFields.currentPassword.trim() == ""){
-            newErrors["currentPassword"] = "Current password field is required"
-            hasErrors=true;
-        }
-
         if(formFields.newPassword.trim() == ""){
             newErrors["newPassword"] = "New password field is required"
             hasErrors=true;
@@ -37,17 +32,17 @@ const ChangePassword = () => {
         setFormFieldsErrors(newErrors);
 
         if(!hasErrors){
-            axios.post("http://localhost:5000/api/v1/users/change-password", {"user_id": params.source_user, "current_password": formFields.currentPassword, "new_password": formFields.newPassword})
+            axios.post("http://localhost:5000/api/v1/users/reset-password", {"user_id": params.source_user, "token": params.token, "new_password": formFields.newPassword})
             .then((res) => {
                 if(res.status == 200){
                     console.log(res)
-                    setForgotPasswordRequestError("")
+                    setResetForgottenPasswordRequestError("")
                     navigate('/login', { state: { message: res.data.contents } })
                 }
             })
             .catch((err) => {
                 console.log(err.response.data.contents)
-                setForgotPasswordRequestError(err.response.data.contents)
+                setResetForgottenPasswordRequestError(err.response.data.contents)
             })
         }
     }
@@ -57,28 +52,16 @@ const ChangePassword = () => {
             <img src={logoImg} alt='logo' className='h-16 mt-3' />
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
-                <input disabled type='text' value={params.source_user} className='text-field' name='emailAddress' onChange={handleFieldChange}/>
-                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">person</span>
-                <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.emailAddress}</p>
-            </div>
-
-            <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
-                <input type='password' placeholder='Current Password' className='text-field' name='currentPassword' onChange={handleFieldChange}/>
-                <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
-                <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.currentPassword}</p>
-            </div>
-
-            <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
                 <input type='password' placeholder='New Password' className='text-field' name='newPassword' onChange={handleFieldChange}/>
                 <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.newPassword}</p>
             </div>
 
-            <button className='w-[90%] h-[45px] bg-[var(--global-color)] text-gray-800 hover:bg-[var(--global-color-hover)]' onClick={handleChangePasswordRequest}>Change Password</button>
+            <button className='w-[90%] h-[45px] bg-[var(--global-color)] text-gray-800 hover:bg-[var(--global-color-hover)]' onClick={handleChangePasswordRequest}>Reset Password</button>
             
             {
-                forgotPasswordRequestError != "" ?
-                <p className='text-red-500'>{forgotPasswordRequestError}</p> :
+                resetForgottenPasswordRequestError != "" ?
+                <p className='text-red-500'>{resetForgottenPasswordRequestError}</p> :
                 null
             }
 
@@ -86,4 +69,4 @@ const ChangePassword = () => {
     </div>
 }
 
-export default ChangePassword;
+export default ResetForgottenPassword;

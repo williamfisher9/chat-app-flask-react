@@ -163,7 +163,7 @@ const Home = () => {
         {
           windowSize > 800 ? 
           
-  <div className="max-[1000px]:w-[40%] min-[1000px]:w-[25%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
+  <div className="max-[1000px]:w-[40%] min-[1000px]:w-[20%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
           <div className="flex justify-center items-center">
             <Link to={`/home/${params.source_user}/global`}>
               <img
@@ -216,12 +216,12 @@ const Home = () => {
           
 
           <div className="flex justify-center items-center flex-col gap-2">
-          <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={changePassword}>
+          <button className="btn w-full h-12 flex justify-start items-center gap-1" onClick={changePassword}>
             <span className="material-symbols-rounded">
 keyboard_lock
 </span>CHANGE PASSWORD
             </button>
-            <button className="btn w-full h-12 flex justify-center items-center gap-1" onClick={signUserOut}>
+            <button className="btn w-full h-12 flex justify-start items-center gap-1" onClick={signUserOut}>
             <span className="material-symbols-rounded">
 logout
 </span> SIGN OUT
