@@ -42,7 +42,7 @@ const Register = () => {
 
 
         if(!hasErrors){
-            axios.post("http://3.145.152.55:3030/chatter/api/v1/users/signup", {"email_address": formFields.emailAddress, 
+            axios.post("https://willtechbooth.dev/chatter/api/v1/users/signup", {"email_address": formFields.emailAddress, 
                                                                     "first_name": formFields.firstName, 
                                                                     "last_name": formFields.lastName, 
                                                                     "password": formFields.password})
