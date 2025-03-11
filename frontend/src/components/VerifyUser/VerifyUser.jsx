@@ -13,7 +13,7 @@ const VerifyUser = () => {
 
     useEffect(() => {
 
-        axios.post("http://3.145.152.55:3030/api/v1/users/verify-user", {"user_id": params.source_user, "token": params.token})
+        axios.post("http://3.145.152.55:3030/chatter/api/v1/users/verify-user", {"user_id": params.source_user, "token": params.token})
             .then((res) => {
                 if(res.status == 200){
                     console.log(res)

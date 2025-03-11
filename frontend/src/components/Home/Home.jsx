@@ -31,7 +31,7 @@ const Home = () => {
 
   useEffect(() => {
 
-    axios.get(`http://3.145.152.55:3030/api/v1/users/chat/${params.source_user}/${params.dest_user}`, {
+    axios.get(`http://3.145.152.55:3030/chatter/api/v1/users/chat/${params.source_user}/${params.dest_user}`, {
       headers: { Authorization: `Bearer ${Cookies.get("token")}` },
     })
     .then((res) => {

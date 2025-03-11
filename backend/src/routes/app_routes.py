@@ -12,7 +12,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 import uuid
 
-user_blueprint = Blueprint("user_blueprint", url_prefix="/api/v1/users", import_name=__name__)
+user_blueprint = Blueprint("user_blueprint", url_prefix="/chatter/api/v1/users", import_name=__name__)
 
 @user_blueprint.route("/signup", methods=['POST'])
 def register_user():

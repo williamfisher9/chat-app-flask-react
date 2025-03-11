@@ -37,7 +37,7 @@ const ChangePassword = () => {
         setFormFieldsErrors(newErrors);
 
         if(!hasErrors){
-            axios.post("http://3.145.152.55:3030/api/v1/users/change-password", {"user_id": params.source_user, "current_password": formFields.currentPassword, "new_password": formFields.newPassword})
+            axios.post("http://3.145.152.55:3030/chatter/api/v1/users/change-password", {"user_id": params.source_user, "current_password": formFields.currentPassword, "new_password": formFields.newPassword})
             .then((res) => {
                 if(res.status == 200){
                     console.log(res)
