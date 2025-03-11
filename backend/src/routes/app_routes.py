@@ -26,7 +26,7 @@ def register_user():
     msg = Message(user.user_id, sender=os.environ.get('MAIL_USERNAME'), recipients=[data["email_address"]])
 
     msg.html = f"""
-        <a href='http://localhost:5173/verify-user/{user.user_id}/{user.user_verification_token}'>Verify User</a>
+        <a href='https://willtechbooth.dev/chatter/verify-user/{user.user_id}/{user.user_verification_token}'>Verify User</a>
         """
     mail.send(msg)
 
@@ -107,7 +107,7 @@ def forgot_password_handler():
     db.session.commit()
 
     msg.html = f"""
-    <a href='http://localhost:5173/forgot-password/{user.user_id}/{password_reset_token}'>Reset Your Password</a>
+    <a href='https://willtechbooth.dev/chatter/forgot-password/{user.user_id}/{password_reset_token}'>Reset Your Password</a>
     """
     mail.send(msg)
 
