@@ -61,7 +61,6 @@ const Home = () => {
 
     const socketInstance = io("https://willtechbooth.dev", {
       autoConnect: true,
-      path: "/chatter",
       query: { token: `${Cookies.get("token")}` },
       extraHeaders: {
         authorization: `bearer ${Cookies.get("token")}`,
