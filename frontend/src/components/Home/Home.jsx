@@ -59,7 +59,7 @@ const Home = () => {
       setWindowSize(window.innerWidth)
     })
 
-    const socketInstance = io("https://willtechbooth.dev/chatter/api", {
+    const socketInstance = io("https://willtechbooth.dev/chatter/socket", {
       autoConnect: true,
       query: { token: `${Cookies.get("token")}` },
       extraHeaders: {

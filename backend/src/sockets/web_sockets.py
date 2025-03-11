@@ -26,6 +26,7 @@ def initialize_sockets():
     # handling connect event
     @socketio.on("connect")
     def handle_connect():
+        print("connection request")
         user = User.query.filter_by(user_id=request.headers["username"]).first()
 
         username = request.headers["username"]
