@@ -59,10 +59,9 @@ const Home = () => {
       setWindowSize(window.innerWidth)
     })
 
-    const socketInstance = io("https://willtechbooth.dev/chatter/socket", {
+    const socketInstance = io("https://willtechbooth.dev/chatter", {
       autoConnect: true,
       query: { token: `${Cookies.get("token")}` },
-      path: "/socket/",
       extraHeaders: {
         authorization: `bearer ${Cookies.get("token")}`,
         username: Cookies.get("user_id"),
