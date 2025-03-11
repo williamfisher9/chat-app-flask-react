@@ -14,15 +14,15 @@ import VerifyUser from "./components/VerifyUser/VerifyUser"
 const App = () => {
   return <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Layout />} >
+      <Route path="/chatter" element={<Layout />} >
         <Route index element={<Login />} ></Route>
-        <Route path="/login" element={<Login />} ></Route>
-        <Route path="/register" element={<Register />} ></Route>
-        <Route path="/home/:source_user/:dest_user" element={<Home />} ></Route>
-        <Route path="/forgot-password" element={<ForgotPassword />} ></Route>
-        <Route path="/forgot-password/:source_user/:token" element={<ResetForgottenPassword />} ></Route>
-        <Route path="/verify-user/:source_user/:token" element={<VerifyUser />} ></Route>
-        <Route path="/change-password/:source_user" element={<ChangePassword />} ></Route>
+        <Route path="/chatter/login" element={<Login />} ></Route>
+        <Route path="/chatter/register" element={<Register />} ></Route>
+        <Route path="/chatter/home/:source_user/:dest_user" element={<Home />} ></Route>
+        <Route path="/chatter/forgot-password" element={<ForgotPassword />} ></Route>
+        <Route path="/chatter/forgot-password/:source_user/:token" element={<ResetForgottenPassword />} ></Route>
+        <Route path="/chatter/verify-user/:source_user/:token" element={<VerifyUser />} ></Route>
+        <Route path="/chatter/change-password/:source_user" element={<ChangePassword />} ></Route>
       </Route>
       <Route path="*" element={<NoPage />} ></Route>
     </Routes>

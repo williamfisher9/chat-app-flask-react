@@ -18,7 +18,7 @@ const VerifyUser = () => {
                 if(res.status == 200){
                     console.log(res)
                     setVerifyUserError("")
-                    navigate('/login', { state: { message: res.data.contents } })
+                    navigate('/chatter/login', { state: { message: res.data.contents } })
                 }
             })
             .catch((err) => {

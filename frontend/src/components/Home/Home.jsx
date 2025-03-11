@@ -41,7 +41,7 @@ const Home = () => {
     .catch(err => {
       console.log(err)
       if(err.status == 401 || err.status == 403 || err.status == 422)
-        navigate("/login")
+        navigate("/chatter/login")
     })
 
   }, [params])
@@ -140,11 +140,11 @@ const Home = () => {
     Cookies.remove("user_id");
     Cookies.remove("email_address");
     handleDisconnect();
-    navigate("/login");
+    navigate("/chatter/login");
   };
 
   const changePassword = () => {
-    navigate(`/change-password/${params.source_user}`);
+    navigate(`/chatter/change-password/${params.source_user}`);
   }
 
   const toggleSmallMenu = () => {
@@ -165,7 +165,7 @@ const Home = () => {
           
   <div className="max-[1000px]:w-[40%] min-[1000px]:w-[20%] h-full py-4 px-2 flex flex-col justify-between gap-4 border-r-2 border-[var(--global-color)]">
           <div className="flex justify-center items-center">
-            <Link to={`/home/${params.source_user}/global`}>
+            <Link to={`/chatter/home/${params.source_user}/global`}>
               <img
                 src={logoImg}
                 alt="logo"
@@ -180,7 +180,7 @@ const Home = () => {
           <div
                   key="global"
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => navigate(`/home/${params.source_user}/global`)}
+                  onClick={() => navigate(`/chatter/home/${params.source_user}/global`)}
                 >
                   
                   <p className="text-[var(--global-color)] text-sm">
@@ -197,7 +197,7 @@ const Home = () => {
                 <div
                   key={connectedUsers[key].id}
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2 ${params.dest_user == connectedUsers[key].username ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => navigate(`/home/${params.source_user}/${connectedUsers[key].username}`)}
+                  onClick={() => navigate(`/chatter/home/${params.source_user}/${connectedUsers[key].username}`)}
                 >
                   <img
                     src={connectedUsers[key].avatar}
@@ -273,7 +273,7 @@ logout
           <div
                   key="global"
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => {navigate(`/home/${params.source_user}/global`); setShowSmallMenu(prev => !prev)}}
+                  onClick={() => {navigate(`/chatter/home/${params.source_user}/global`); setShowSmallMenu(prev => !prev)}}
                 >
                   
                   <p className="text-[var(--global-color)] text-sm">
@@ -289,7 +289,7 @@ logout
                 <div
                   key={connectedUsers[key].id}
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-start items-center gap-2 ${params.dest_user == connectedUsers[key].username ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
-                  onClick={() => {navigate(`/home/${params.source_user}/${connectedUsers[key].username}`); setShowSmallMenu(prev => !prev)}}
+                  onClick={() => {navigate(`/chatter/home/${params.source_user}/${connectedUsers[key].username}`); setShowSmallMenu(prev => !prev)}}
                 >
                   <img
                     src={connectedUsers[key].avatar}

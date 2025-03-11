@@ -9,11 +9,11 @@ const Menu = ({handleDisconnect, socketId}) => {
         Cookies.remove("user_id")
         Cookies.remove("email_address")
         handleDisconnect();
-        navigate("/login")
+        navigate("/chatter/login")
     }
 
     return <div className='absolute border border-[var(--global-color)] top-6 left-[50%] translate-x-[-50%] h-14 rounded-xl flex justify-between items-center px-10 w-[600px]'>
-        <Link to={"/"}>
+        <Link to={"/chatter/"}>
             <img src='logo_chat.png' alt='logo' className='h-8 cursor-pointer' />
         </Link>
 

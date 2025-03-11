@@ -42,7 +42,7 @@ const Login = () => {
                     Cookies.set("email_address", res.data.contents.email_address);
                     Cookies.set("user_id", res.data.contents.user_id);
                     setLoginRequestError("")
-                    navigate(`/home/${res.data.contents.user_id}/global`)
+                    navigate(`/chatter/home/${res.data.contents.user_id}/global`)
                 }
             })
             .catch((err) => {
@@ -55,8 +55,8 @@ const Login = () => {
     return <div className='w-full min-h-screen flex justify-center items-center'>
         <form className='w-[500px] max-[550px]:w-[400px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
         <div className='w-full flex'>
-                <Link to="/login" className={`w-[50%] h-[60px] bg-[var(--global-color)]  border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign In</Link>
-                <Link to="/register" className={`w-[50%] h-[60px] text-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign Up</Link>
+                <Link to="/chatter/login" className={`w-[50%] h-[60px] bg-[var(--global-color)]  border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign In</Link>
+                <Link to="/chatter/register" className={`w-[50%] h-[60px] text-[var(--global-color)] border-b border-[var(--global-color)] flex justify-center items-center cursor-pointer`}>Sign Up</Link>
             </div>
 
             <img src='logo_chat.png' alt='logo' className='h-16' />
@@ -79,7 +79,7 @@ const Login = () => {
             </div>
 
             <div className='text-[var(--global-color)] underline w-[90%] '>
-                <Link to={"/forgot-password"}>
+                <Link to={"/chatter/forgot-password"}>
                     <span>Forgot password?</span>
                 </Link>
             </div>
