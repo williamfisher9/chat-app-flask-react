@@ -19,7 +19,7 @@ bcrypt.init_app(app)
 jwt.init_app(app)
 cors.init_app(app)
 mail.init_app(app)
-socketio.init_app(app, cors_allowed_origins="*", path="/socket")
+socketio.init_app(app, cors_allowed_origins="*", path="/socket/")
 app.register_blueprint(user_blueprint)
 
 if __name__ == '__main__':
