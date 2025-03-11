@@ -5,7 +5,7 @@
   "DEBUG": true,
   "JWT_EXP_MILLISECONDS": 300000,
   "MAX_CONTENT_LENGTH": 16000000,
-  "SQLALCHEMY_DATABASE_URI": "sqlite:////home/ubuntu/app_files/app_db_6.db",
+  "SQLALCHEMY_DATABASE_URI": "sqlite:////home/ubuntu/app_files/app_db_7.db",
   "UPLOAD_FOLDER": "/home/ubuntu/app_files/images",
   "LOGS_DIRECTORY": "/home/ubuntu/app_files",
   "MAIL_SERVER": "smtp.gmail.com",
