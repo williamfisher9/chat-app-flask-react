@@ -8,9 +8,34 @@ const Register = () => {
     const [formFields, setFormFields] = useState({emailAddress: "", firstName: "", lastName: "", password: ""})
     const [formFieldsErrors, setFormFieldsErrors] = useState({emailAddress: "", firstName: "", lastName: "", password: ""})
     const [registerRequestError, setRegisterRequestError] = useState("");
+    const [passwordHasErrors, setPasswordHasErrors] = useState({rule1: true, rule2: true, rule3: true})
 
     const handleFieldChange = () => {
         setFormFields({...formFields, [event.target.name]: event.target.value})
+
+        if(event.target.name == "password"){
+            console.log("checking password")
+            let passwordErrors = {...passwordHasErrors}
+            if(event.target.value.length >= 8){
+                passwordErrors = {...passwordErrors, rule1: false}
+            } else {
+                passwordErrors = {...passwordErrors, rule1: true}
+            }
+
+            if(/[A-Z]/.test(event.target.value) && /[a-z]/.test(event.target.value)){
+                passwordErrors = {...passwordErrors, rule2: false}
+            } else {
+                passwordErrors = {...passwordErrors, rule2: true}
+            }
+
+            if(/[0-9]/.test(event.target.value)){
+                passwordErrors = {...passwordErrors, rule3: false}
+            } else {
+                passwordErrors = {...passwordErrors, rule3: true}
+            }
+
+            setPasswordHasErrors(passwordErrors)
+        }
     }
     
     const handleSignUpRequest = () => {
@@ -36,6 +61,15 @@ const Register = () => {
         if(formFields.password.trim() == ""){
             newErrors["password"] = "Password field is required"
             hasErrors=true;
+        } else {
+            newErrors["password"] = ""
+        }
+
+        if(passwordHasErrors["rule1"] || passwordHasErrors["rule2"] || passwordHasErrors["rule3"]){
+            newErrors["password"] = "Password is invalid"
+            hasErrors=true;
+        } else {
+            newErrors["password"] = ""
         }
 
         setFormFieldsErrors(newErrors);
@@ -58,6 +92,11 @@ const Register = () => {
             })
         }
     }
+
+
+    
+
+
 
     return <div className='w-full min-h-screen flex justify-center items-center'>
         <form className='w-[500px] max-[550px]:w-[400px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center overflow-hidden'>
@@ -90,9 +129,14 @@ const Register = () => {
                 <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange} autoComplete='off'/>
                 <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.password}</p>
+                <ul className={`absolute ${formFieldsErrors.password != "" ? 'bottom-[-100px]' : 'bottom-[-85px]'} left-2 text-[var(--global-color)]`}>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule1"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 8 characters long</li>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule2"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least one uppercase letter</li>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule3"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least one digit</li>
+                </ul>
             </div>
 
-            <button className='w-[90%] h-[45px] bg-[var(--global-color)] text-gray-800 hover:bg-[var(--global-color-hover)]' onClick={handleSignUpRequest}>Sign Up</button>
+            <button className={`${formFieldsErrors.password != "" ? 'mt-20' : 'mt-16'} w-[90%] h-[45px] bg-[var(--global-color)] text-gray-800 hover:bg-[var(--global-color-hover)]`} onClick={handleSignUpRequest}>Sign Up</button>
 
             {
                 registerRequestError != "" ?
