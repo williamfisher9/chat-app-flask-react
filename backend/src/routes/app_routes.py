@@ -17,7 +17,7 @@ user_blueprint = Blueprint("user_blueprint", url_prefix="/api/v1/users", import_
 @user_blueprint.route("/signup", methods=['POST'])
 def register_user():
     data = request.get_json()
-    user = User(data["email_address"], bcrypt.generate_password_hash(data["password"]), data["first_name"], data["last_name"])
+    user = User(str(data["email_address"]).lower(), bcrypt.generate_password_hash(data["password"]), data["first_name"], data["last_name"])
 
     user.user_id = f"user_{str(uuid.uuid4()).replace('-', '')}"
     user.avatar = f"https://avatar.iran.liara.run/username?username={data["first_name"]}+{data["last_name"]}"
@@ -40,7 +40,7 @@ def register_user():
 def login_user():
     data = request.get_json()
 
-    user = User.query.filter_by(email_address=data["email_address"]).first()
+    user = User.query.filter_by(email_address=str(data["email_address"]).lower()).first()
 
     if not user:
         response_message = ResponseMessage("Username was not found", 404)
@@ -93,13 +93,13 @@ def get_special_chat(from_user, to_user):
 def forgot_password_handler():
     data = request.get_json()
 
-    user = User.query.filter_by(email_address=data["email_address"]).first()
+    user = User.query.filter_by(email_address=str(data["email_address"]).lower()).first()
 
     if not user:
         response_message = ResponseMessage("Username was not found", 404)
         return response_message.create_response_message(), 404
 
-    msg = Message(user.user_id, sender=os.environ.get('MAIL_USERNAME'), recipients=[data["email_address"]])
+    msg = Message(user.user_id, sender=os.environ.get('MAIL_USERNAME'), recipients=[str(data["email_address"]).lower()])
     password_reset_token = f"{str(uuid.uuid4())}"
 
     user.password_reset_token = password_reset_token

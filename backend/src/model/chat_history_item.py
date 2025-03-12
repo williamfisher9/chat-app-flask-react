@@ -1,3 +1,5 @@
+import datetime
+
 from src.extensions.extensions import db
 
 class ChatHistoryItem(db.Model):
@@ -9,6 +11,7 @@ class ChatHistoryItem(db.Model):
     avatar = db.Column(db.String, nullable=False)
     from_user = db.Column(db.String, nullable=False)
     to_user = db.Column(db.String, nullable=False)
+    message_creation_date = db.Column(db.DateTime, default=datetime.datetime.now)
 
     def __init__(self, username, message, sid, full_name, from_user, to_user):
         self.username = username
@@ -26,5 +29,6 @@ class ChatHistoryItem(db.Model):
             "avatar": self.avatar,
             "full_name": self.full_name,
             "from_user": self.from_user,
-            "to_user": self.to_user
+            "to_user": self.to_user,
+            "message_creation_date": self.message_creation_date
         }

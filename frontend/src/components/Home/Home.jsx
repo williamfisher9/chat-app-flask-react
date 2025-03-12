@@ -359,7 +359,7 @@ logout
 
 
         <div className="relative flex flex-col justify-center items-center  h-full px-4 max-[1000px]:w-full min-[1000px]:w-[85%]">
-          <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style">
+          <div className="w-full h-[80%] px-4 bottom-16 scrollbar-style flex flex-col justify-end">
             {chatHistory.map((msg) => {
               //console.log(msg.from_user == params.source_user,  msg.to_user == params.dest_user)
               if ((msg.to_user == "global" && params.dest_user == "global") ||
