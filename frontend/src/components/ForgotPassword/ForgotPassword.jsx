@@ -43,7 +43,7 @@ const ForgotPassword = () => {
     }
 
     return <div className='w-full min-h-screen flex justify-center items-center'>
-        <form className='w-[500px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
+        <form className='w-[500px] max-[550px]:w-[400px] min-h-11 border-2 border-[var(--global-color)] rounded-lg pb-8 flex flex-col gap-7 justify-center items-center backdrop-blur-lg overflow-hidden'>
             <img src='logo_chat.png' alt='logo' className='h-16 mt-3' />
 
             <div className='relative w-[90%] h-[45px] border border-[var(--global-color)]'>
@@ -60,7 +60,7 @@ const ForgotPassword = () => {
                 null
             }
 
-            <span className='text-white'>Go back to login page? ? <a href='/login' className='underline text-[var(--global-color)]'>Sign In</a></span>
+            <span className='text-white'>Go back to login page? ? <a href='/chatter/login' className='underline text-[var(--global-color)]'>Sign In</a></span>
         </form>
     </div>
 }
