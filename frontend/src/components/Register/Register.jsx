@@ -134,7 +134,7 @@ const Register = () => {
                 <input type='password' placeholder='Password' className='text-field' name='password' onChange={handleFieldChange} autoComplete='off'/>
                 <span className="material-symbols-rounded absolute top-0 left-0 flex justify-center items-center text-3xl bg-[var(--global-color)] size-[44px] select-none">password</span>
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.password}</p>
-                <ul className={`absolute ${formFieldsErrors.password != "" ? 'bottom-[-100px]' : 'bottom-[-85px]'} left-2 text-[var(--global-color)]`}>
+                <ul className={`absolute ${formFieldsErrors.password != "" ? 'bottom-[-115px]' : 'bottom-[-100px]'} left-2 text-[var(--global-color)]`}>
                     <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule1"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 8 characters long</li>
                     <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule2"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 1 uppercase letter</li>
                     <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule3"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 1 digit</li>
