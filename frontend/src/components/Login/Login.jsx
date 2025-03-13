@@ -94,7 +94,7 @@ const Login = () => {
 
 
 
-            <span className='text-white'>Don't have an account? <a href='/register' className='underline text-[var(--global-color)]'>Sign Up</a></span>
+            <span className='text-white'>Don't have an account? <a href='/chatter/register' className='underline text-[var(--global-color)]'>Sign Up</a></span>
         </form>
     </div>
 }
