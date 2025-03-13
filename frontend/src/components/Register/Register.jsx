@@ -88,7 +88,6 @@ const Register = () => {
             .then((res) => {
                 if(res.status == 201){
                     setRegisterRequestError("")
-                    navigate("/chatter/login");
                     navigate('/chatter/login', { state: { message: 'VERIFY YOUR EMAIL ADDRESS TO LOGIN' } })
                 }
             })
