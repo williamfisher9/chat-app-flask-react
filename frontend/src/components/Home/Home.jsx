@@ -177,6 +177,25 @@ const Home = () => {
           <div className="flex flex-col gap-2 justify-start items-center h-[85%]">
 
 
+
+            {
+              <div
+                  className={`w-[90%] px-2 py-2 flex flex-col justify-center items-center gap-2`}
+                >
+                  <img
+                    src={connectedUsers[params.source_user].avatar}
+                    className="size-10 rounded-full"
+                    alt="img"
+                  />
+                  <p className="text-[var(--global-color)] text-sm">
+                    {connectedUsers[params.source_user].full_name}
+                  </p>
+                </div>
+            }
+
+            
+
+
           <div
                   key="global"
                   className={`cursor-pointer bg-yellow-500/10 rounded-md w-[90%] px-2 py-2 flex justify-center items-center gap-2 ${params.dest_user == "global" ? "border-2 border-[var(--global-color)]" : "border-2 border-transparent"}`}
