@@ -178,10 +178,7 @@ const Home = () => {
 
 
 
-            {
-              <div
-                  className={`w-[90%] px-2 py-2 flex flex-col justify-center items-center gap-2`}
-                >
+            { connectedUsers[params.source_user] != null && <div className={`w-[90%] px-2 py-2 flex flex-col justify-center items-center gap-2`}>
                   <img
                     src={connectedUsers[params.source_user].avatar}
                     className="size-10 rounded-full"
