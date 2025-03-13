@@ -8,13 +8,12 @@ const Register = () => {
     const [formFields, setFormFields] = useState({emailAddress: "", firstName: "", lastName: "", password: ""})
     const [formFieldsErrors, setFormFieldsErrors] = useState({emailAddress: "", firstName: "", lastName: "", password: ""})
     const [registerRequestError, setRegisterRequestError] = useState("");
-    const [passwordHasErrors, setPasswordHasErrors] = useState({rule1: true, rule2: true, rule3: true})
+    const [passwordHasErrors, setPasswordHasErrors] = useState({rule1: true, rule2: true, rule3: true, rule4: true})
 
     const handleFieldChange = () => {
         setFormFields({...formFields, [event.target.name]: event.target.value})
 
         if(event.target.name == "password"){
-            console.log("checking password")
             let passwordErrors = {...passwordHasErrors}
             if(event.target.value.length >= 8){
                 passwordErrors = {...passwordErrors, rule1: false}
@@ -32,6 +31,12 @@ const Register = () => {
                 passwordErrors = {...passwordErrors, rule3: false}
             } else {
                 passwordErrors = {...passwordErrors, rule3: true}
+            }
+
+            if(/[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(event.target.value)){
+                passwordErrors = {...passwordErrors, rule4: false}
+            } else {
+                passwordErrors = {...passwordErrors, rule4: true}
             }
 
             setPasswordHasErrors(passwordErrors)
@@ -65,7 +70,7 @@ const Register = () => {
             newErrors["password"] = ""
         }
 
-        if(passwordHasErrors["rule1"] || passwordHasErrors["rule2"] || passwordHasErrors["rule3"]){
+        if(passwordHasErrors["rule1"] || passwordHasErrors["rule2"] || passwordHasErrors["rule3"] || passwordHasErrors["rule4"]){
             newErrors["password"] = "Password is invalid"
             hasErrors=true;
         } else {
@@ -131,8 +136,9 @@ const Register = () => {
                 <p className='text-red-500 absolute bottom-[-25px] left-0'>{formFieldsErrors.password}</p>
                 <ul className={`absolute ${formFieldsErrors.password != "" ? 'bottom-[-100px]' : 'bottom-[-85px]'} left-2 text-[var(--global-color)]`}>
                     <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule1"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 8 characters long</li>
-                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule2"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least one uppercase letter</li>
-                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule3"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least one digit</li>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule2"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 1 uppercase letter</li>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule3"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 1 digit</li>
+                    <li className='flex justify-start items-center gap-1'>{passwordHasErrors["rule4"] == false ? <span className="material-symbols-rounded text-green-500">check_circle</span> : <span className="material-symbols-rounded text-red-500">cancel</span>}At least 1 special character</li>
                 </ul>
             </div>
 
