@@ -144,7 +144,7 @@ const Register = () => {
                 null
             }
 
-            <span className='text-white'>You have an account? <a href='/login' className='underline text-[var(--global-color)]'>Sign In</a></span>
+            <span className='text-white'>You have an account? <a href='/chatter/login' className='underline text-[var(--global-color)]'>Sign In</a></span>
         </form>
     </div>
 }
