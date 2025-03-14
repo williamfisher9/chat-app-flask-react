@@ -51,8 +51,8 @@ jobs:
           ls -la ~
           echo "Running .profile"
           source ~/.profile
-          echo "Killing existing"
-          pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
+          echo "Killing existing applciation process"
+          exec pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
           cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
           echo "Running application profile venv"
           python3 -m venv venv
