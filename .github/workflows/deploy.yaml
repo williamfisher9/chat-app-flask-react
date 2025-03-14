@@ -49,11 +49,16 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing home directory:"
           ls -la ~
+          echo "Running .profile"
           source ~/.profile
+          echo "Killing existing"
           pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
           cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
+          echo "Running application profile venv"
           python3 -m venv venv
           source venv/bin/activate
+          echo "Installing applciation requirements"
           pip install -r requirements.txt
+          echo "Running application process"
           nohup python3 -m src > log.txt 2>&1 &
           '
