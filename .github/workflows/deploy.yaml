@@ -50,7 +50,7 @@ jobs:
           echo "Listing home directory:"
           ls -la ~
           source ~/.profile
-          pkill python3
+          pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
           cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
           python3 -m venv venv
           source venv/bin/activate
