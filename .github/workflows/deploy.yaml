@@ -25,10 +25,10 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     - run: npm ci
     - run: npm run build --if-present
-    - name: Clear contents of /var/www/html
-      run: sudo rm -rf /var/www/html/*
-    - name: Copy dist folder to /var/www/html
-      run: sudo cp -r dist/* /var/www/html
+    - name: Clear contents of /var/www/html/chatter
+      run: sudo rm -rf /var/www/html/chatter
+    - name: Copy dist folder to /var/www/html/chatter
+      run: sudo cp -r dist/* /var/www/html/chatter
       
   backend:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
           ls -la ~
           source ~/.profile
           pkill python3
-          cd /home/ubuntu/actions-runner/_work/chat-app-flask-react/chat-app-flask-react/backend
+          cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
