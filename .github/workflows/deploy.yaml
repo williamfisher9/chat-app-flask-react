@@ -49,11 +49,11 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing home directory:"
           ls -la ~
-          echo "Running .profile"
-          source ~/.profile
           echo "Killing existing applciation process"
           #exec pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
           pgrep -f chat-app-flask-react | xargs kill
+          echo "Running .profile"
+          source ~/.profile
           cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
           echo "Running application profile venv"
           python3 -m venv venv
