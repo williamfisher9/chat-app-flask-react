@@ -49,9 +49,19 @@ jobs:
           echo "Current directory: $(pwd)"
           echo "Listing home directory:"
           ls -la ~
+          
           echo "Killing existing applciation process"
           #exec pkill -f /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend/venv/bin/python3
-          pgrep -f chat-app-flask-react | xargs kill
+          pgrep -fi chat-app-flask-react
+          if [ $? -eq 0 ];
+          then
+            echo "Killing the previous process"
+            kill -9 $(pgrep -fi bot.py)
+          else
+            echo "No previous process exists."
+          fi
+          trap finish EXIT
+
           echo "Running .profile"
           source ~/.profile
           cd /home/ubuntu/actions-runner-chat-app/_work/chat-app-flask-react/chat-app-flask-react/backend
