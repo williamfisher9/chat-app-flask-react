@@ -43,13 +43,13 @@ The purpose of this project is to:
 
 ## ⚙️ Setup Instructions
 
-1. ##Clone the Repository##
+1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/realtime-chat-app.git
-cd realtime-chat-app
+git clone https://github.com/williamfisher9/chat-app-flask-react
+cd chat-app-flask-react
 ```
 
-2. ##Run the Flask Backend##
+2. Run the Flask Backend
 ```bash
 cd server
 python3 -m venv venv
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-3. ##Run React Frontend##
+3. Run React Frontend
 ```bash
 cd client
 npm install
